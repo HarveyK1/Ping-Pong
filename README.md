@@ -7,7 +7,7 @@ vcpkg - https://github.com/microsoft/vcpkg
 raylib - https://www.raylib.com/
 ```
 
-**TODO**
+**TODO:**
 ```
 Find way to delete ball when it goes off the screen - might fix score inf increment
 
