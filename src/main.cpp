@@ -12,6 +12,11 @@ public:
 	{
 		DrawCircle((int)x, (int)y, radius, WHITE);
 	}
+
+	void BallReset()
+	{
+
+	}
 };
 
 class Paddle
@@ -57,6 +62,12 @@ int main()
 	rightPaddle.width = 10;
 	rightPaddle.height = 100;
 	rightPaddle.speedY = 500;
+
+	const char* winnerText{ nullptr };
+	const char* restartText{ nullptr };
+	const char* scoreText{ nullptr };
+	int rightSideScore{};
+	int leftSideScore{};
 
 	while (!WindowShouldClose())
 	{
@@ -106,7 +117,27 @@ int main()
 				ball.speedX *= -1;
 			}
 		}
-
+		if (ball.x < 0)
+		{
+			winnerText = "Right Side Wins!\n";
+			restartText = "Press Spacebar to restart!\n";
+			rightSideScore += 1;
+		}
+		if (ball.x > GetScreenWidth())
+		{
+			winnerText = "Left Side Wins!\n";
+			restartText = "Press Spacebar to restart!\n";
+			leftSideScore += 1;
+		}
+		if (winnerText && restartText && IsKeyPressed(KEY_SPACE))
+		{
+			ball.x = GetScreenWidth() / 2;
+			ball.y = GetScreenHeight() / 2;
+			ball.speedX = 300;
+			ball.speedY = 300;
+			winnerText = nullptr;
+			restartText = nullptr;
+		}
 
 		BeginDrawing();
 			ClearBackground(BLACK);
@@ -115,6 +146,21 @@ int main()
 			ball.Draw();
 			leftPaddle.Draw();
 			rightPaddle.Draw();
+
+			if (winnerText)
+			{
+				int winnerTextWidth = MeasureText(winnerText, 80);
+				DrawText(winnerText, GetScreenWidth() / 2 - winnerTextWidth / 2, GetScreenHeight() / 2 - 30, 80, YELLOW);
+			}
+			if (restartText)
+			{
+				int restartTextWidth = MeasureText(restartText, 20);
+				DrawText(restartText, GetScreenWidth() / 2 - restartTextWidth / 2, GetScreenHeight() / 2 - -200, 20, WHITE);
+			}
+			
+			int scoreTextWidth = MeasureText(scoreText, 50);
+			DrawText(TextFormat("Score: %i", rightSideScore), 10, 20, 20, WHITE);
+			DrawText(TextFormat("Score: %i", leftSideScore), (GetScreenWidth() + 10) - MeasureText(TextFormat("Score: %i", leftSideScore), 25), 20, 20, WHITE);
 
 		EndDrawing();
 		CloseWindow();
